@@ -1,0 +1,51 @@
+[project]
+name = "erlang-pre-commit"
+version = "2026.1.0"
+description = "pre-commit hooks for efmt and elint"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+authors = [
+  { name = "Shiguredo Inc." },
+]
+
+[project.scripts]
+efmt = "erlang_pre_commit.cli:efmt"
+elint = "erlang_pre_commit.cli:elint"
+
+[dependency-groups]
+dev = [
+  # フォーマッタ・リンタ
+  "ruff",
+  # 静的型チェッカ
+  "ty",
+]
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+  "E",
+  "W",
+  "F",
+  "I",
+  "B",
+  "UP",
+  "SIM",
+  "C4",
+  "PT",
+  "ANN",
+  "RUF",
+]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ty]

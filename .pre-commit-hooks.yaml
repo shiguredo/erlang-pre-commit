@@ -1,0 +1,20 @@
+- id: efmt
+  name: efmt
+  description: efmt で Erlang ソースをフォーマットする
+  entry: efmt -w
+  language: python
+  files: (\.(erl|hrl|app\.src)$)|(^|/)rebar\.config$
+
+- id: efmt-check
+  name: efmt-check
+  description: efmt で Erlang のフォーマットを検査する（書き込みなし）
+  entry: efmt -c
+  language: python
+  files: (\.(erl|hrl|app\.src)$)|(^|/)rebar\.config$
+
+- id: elint
+  name: elint
+  description: elint で Erlang ソースをリントする
+  entry: elint
+  language: python
+  files: \.(erl|hrl)$

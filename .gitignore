@@ -1,0 +1,24 @@
+# Python 生成物
+__pycache__/
+*.py[oc]
+*.egg-info
+build/
+dist/
+wheels/
+
+# キャッシュ
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.hypothesis/
+.ty_cache/
+
+# 仮想環境
+.venv/
+
+# ダウンロードした efmt / elint バイナリ
+src/erlang_pre_commit/_bins/
+
+# OS / エージェント
+.DS_Store
+.claude/
