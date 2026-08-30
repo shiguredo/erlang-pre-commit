@@ -119,7 +119,7 @@ hooks = [
 
 - macOS `aarch64` (Apple Silicon)
 - Linux (musl) `x86_64`
-- Linux (musl) `aarch64`（elint のみ。efmt は上流にプリビルドが無いため未対応）
+- Linux (musl) `aarch64`
 
 Windows は非対応です。
 
