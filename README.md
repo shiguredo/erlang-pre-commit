@@ -18,7 +18,7 @@
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.1.0"
+rev = "2026.2.0"
 hooks = [
   { id = "efmt" },
   { id = "elint" },
@@ -30,7 +30,7 @@ CI などで書き込みなしの検査だけしたい場合は `efmt-check` を
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.1.0"
+rev = "2026.2.0"
 hooks = [
   { id = "efmt-check" },
   { id = "elint" },
@@ -62,7 +62,7 @@ prek の `args` に渡した引数は、そのまま `efmt` / `elint` に転送�
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.1.0"
+rev = "2026.2.0"
 hooks = [
   { id = "efmt-check", args = ["--check-line-length=100", "--color"] },
   { id = "elint" },
@@ -106,7 +106,7 @@ hooks = [
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.1.0"
+rev = "2026.2.0"
 hooks = [
   { id = "efmt" },
   { id = "elint", args = ["--lint=element_bif", "--lint=case_over_if"] },
@@ -119,7 +119,7 @@ hooks = [
 
 - macOS `aarch64` (Apple Silicon)
 - Linux (musl) `x86_64`
-- Linux (musl) `aarch64`（elint のみ。efmt は上流にプリビルドが無いため未対応）
+- Linux (musl) `aarch64`
 
 Windows は非対応です。
 
