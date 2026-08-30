@@ -11,6 +11,10 @@
 
 ## develop
 
+## 2026.2.0
+
+**リリース日**: 2026-08-30
+
 - [ADD] efmt の Linux musl aarch64 バイナリに対応する
   - @voluntas
 - [UPDATE] efmt を 0.21.1 に更新する
