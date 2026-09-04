@@ -4,11 +4,11 @@ from __future__ import annotations
 
 # ツールバージョン (先頭の "v" は付けない)
 EFMT_VERSION = "0.21.1"
-ELINT_VERSION = "0.1.0"
+ELINT_VERSION = "0.1.1"
 
 # GitHub リリースのタグ
 EFMT_RELEASE_TAG = "v0.21.1"
-ELINT_RELEASE_TAG = "v0.1.0"
+ELINT_RELEASE_TAG = "v0.1.1"
 
 # リリースアセットの sha256: tool -> rust target -> digest
 CHECKSUMS: dict[str, dict[str, str]] = {
@@ -25,13 +25,13 @@ CHECKSUMS: dict[str, dict[str, str]] = {
     },
     "elint": {
         "aarch64-apple-darwin": (
-            "eed000a4365dee76450e38c3fb031e9b9119514627a40c37bdd7c4ac7af46d1c"
+            "e7d10e21831e42a97a35cc15669e2e20624a374ef691184d7912dac5e99a141d"
         ),
         "aarch64-unknown-linux-musl": (
-            "604a490baf09d1cec887c8d9fae4dc1b6da57232f4814b03760bd140c2d4e12b"
+            "ee3e8c04e643b1f39d06ada524ee7cce7fd9cef4658e7df51ad28ed46070074b"
         ),
         "x86_64-unknown-linux-musl": (
-            "5db517f934355a1c084d8a2e55fdd441e1bac44d109c6241ce24b4a22cf0ff05"
+            "4d838060ae3a054e41c90f8b4a670645a5c9a34f4243bded30e478e6b3d719c0"
         ),
     },
 }

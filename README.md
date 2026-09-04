@@ -95,6 +95,7 @@ hooks = [
 
 利用可能なルール名は次のとおりです（詳細は `elint --list` / `elint --explain <name>`）。
 
+- `attr_order`
 - `case_over_if`
 - `deep_case_nesting`
 - `element_bif`
