@@ -18,7 +18,7 @@
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.2.0"
+rev = "2026.3.0"
 hooks = [
   { id = "efmt" },
   { id = "elint" },
@@ -30,7 +30,7 @@ CI などで書き込みなしの検査だけしたい場合は `efmt-check` を
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.2.0"
+rev = "2026.3.0"
 hooks = [
   { id = "efmt-check" },
   { id = "elint" },
@@ -62,7 +62,7 @@ prek の `args` に渡した引数は、そのまま `efmt` / `elint` に転送�
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.2.0"
+rev = "2026.3.0"
 hooks = [
   { id = "efmt-check", args = ["--check-line-length=100", "--color"] },
   { id = "elint" },
@@ -95,6 +95,7 @@ hooks = [
 
 利用可能なルール名は次のとおりです（詳細は `elint --list` / `elint --explain <name>`）。
 
+- `attr_order`
 - `case_over_if`
 - `deep_case_nesting`
 - `element_bif`
@@ -106,7 +107,7 @@ hooks = [
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.2.0"
+rev = "2026.3.0"
 hooks = [
   { id = "efmt" },
   { id = "elint", args = ["--lint=element_bif", "--lint=case_over_if"] },
