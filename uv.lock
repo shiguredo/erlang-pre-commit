@@ -4,7 +4,7 @@ requires-python = ">=3.12"
 
 [[package]]
 name = "erlang-pre-commit"
-version = "2026.2.0"
+version = "2026.3.0"
 source = { editable = "." }
 
 [package.dev-dependencies]
