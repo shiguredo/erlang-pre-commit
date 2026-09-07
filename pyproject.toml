@@ -15,18 +15,18 @@ elint = "erlang_pre_commit.cli:elint"
 
 [dependency-groups]
 dev = [
-  # フォーマッタ・リンタ
-  "ruff",
-  # 静的型チェッカ
-  "ty",
   # テスト
-  "pytest>=8.3,<9",
-  "pytest-timeout>=2.3,<3",
+  "pytest",
+  "pytest-timeout",
 ]
 
 [build-system]
 requires = ["uv_build"]
 build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+timeout = 10
 
 [tool.ruff]
 line-length = 100
@@ -52,7 +52,3 @@ ignore = []
 quote-style = "double"
 
 [tool.ty]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-timeout = 10
