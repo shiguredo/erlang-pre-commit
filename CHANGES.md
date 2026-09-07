@@ -11,6 +11,10 @@
 
 ## develop
 
+## 2026.3.1
+
+**リリース日**: 2026-09-07
+
 - [FIX] prek が efmt / elint を並列起動した初回ダウンロードで一時ファイルが衝突しないようにする
   - `Path.with_suffix(".tmp")` により一時名が `efmt-0.21.tmp` へ潰れ、`FileNotFoundError` や `Exec format error` が起きていた
   - @voluntas
