@@ -19,6 +19,9 @@ dev = [
   "ruff",
   # 静的型チェッカ
   "ty",
+  # テスト
+  "pytest>=8.3,<9",
+  "pytest-timeout>=2.3,<3",
 ]
 
 [build-system]
@@ -49,3 +52,7 @@ ignore = []
 quote-style = "double"
 
 [tool.ty]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+timeout = 10
