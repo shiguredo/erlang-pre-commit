@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+import fcntl
 import hashlib
 import os
 import platform
 import stat
+import tempfile
 import urllib.error
 import urllib.request
+from collections.abc import Iterator
+from contextlib import contextmanager
 from pathlib import Path
 
 from erlang_pre_commit.versions import (
@@ -65,6 +69,70 @@ def _bin_dir() -> Path:
     return Path(__file__).resolve().parent / "_bins"
 
 
+def _is_ready(destination: Path, expected: str) -> bool:
+    return destination.is_file() and _sha256_file(destination) == expected
+
+
+@contextmanager
+def _exclusive_file_lock(lock_path: Path) -> Iterator[None]:
+    """
+    ダウンロードと配置をプロセス間で直列化する。
+
+    prek は同一フックを複数プロセスで並列起動するため、
+    初回実行時に同じバイナリへ同時書き込みが起きる。
+    """
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+b") as lock_file:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+
+
+def _publish_binary(destination: Path, data: bytes) -> None:
+    """
+    検証済みバイト列を destination へ原子的に配置する。
+
+    Path.with_suffix(".tmp") は使わない。
+    `efmt-0.21.1-aarch64-apple-darwin` の suffix は
+    `.1-aarch64-apple-darwin` と解釈され、一時名が
+    `efmt-0.21.tmp` に潰れて並列プロセス間で衝突するため。
+    加えて mkstemp でプロセス固有の一時ファイルにし、
+    ロック漏れがあっても truncate 競合しないようにする。
+    """
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(
+        prefix=f".{destination.name}.",
+        suffix=".tmp",
+        dir=destination.parent,
+    )
+    tmp_path = Path(tmp_name)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(data)
+        tmp_path.chmod(tmp_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        os.replace(tmp_path, destination)
+    except BaseException:
+        tmp_path.unlink(missing_ok=True)
+        raise
+
+
+def _download(url: str, tool: str, version: str, target: str) -> bytes:
+    try:
+        request = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
+        with urllib.request.urlopen(request) as response:
+            return response.read()
+    except urllib.error.HTTPError as exc:
+        raise RuntimeError(
+            f"Failed to download {tool} {version} for {target} from {url}: HTTP {exc.code}"
+        ) from exc
+    except urllib.error.URLError as exc:
+        raise RuntimeError(
+            f"Failed to download {tool} {version} for {target} from {url}: {exc}"
+        ) from exc
+
+
 def ensure_binary(tool: str) -> Path:
     if tool == "efmt":
         version = EFMT_VERSION
@@ -79,36 +147,27 @@ def ensure_binary(tool: str) -> Path:
     expected = _expected_checksum(tool, target)
     destination = _bin_dir() / f"{tool}-{version}-{target}"
 
-    if destination.is_file() and _sha256_file(destination) == expected:
+    if _is_ready(destination, expected):
         return destination
 
-    url = release_asset_url(tool, version, release_tag, target)
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    tmp_path = destination.with_suffix(".tmp")
+    lock_path = destination.with_name(f".{destination.name}.lock")
+    with _exclusive_file_lock(lock_path):
+        # 待機中に他プロセスが配置済みならダウンロードしない
+        if _is_ready(destination, expected):
+            return destination
 
-    try:
-        request = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
-        with urllib.request.urlopen(request) as response:
-            data = response.read()
-    except urllib.error.HTTPError as exc:
-        raise RuntimeError(
-            f"Failed to download {tool} {version} for {target} from {url}: HTTP {exc.code}"
-        ) from exc
-    except urllib.error.URLError as exc:
-        raise RuntimeError(
-            f"Failed to download {tool} {version} for {target} from {url}: {exc}"
-        ) from exc
+        url = release_asset_url(tool, version, release_tag, target)
+        data = _download(url, tool, version, target)
 
-    digest = hashlib.sha256(data).hexdigest()
-    if digest != expected:
-        raise RuntimeError(
-            f"Checksum mismatch for {tool} {version} ({target}): expected {expected}, got {digest}"
-        )
+        digest = hashlib.sha256(data).hexdigest()
+        if digest != expected:
+            raise RuntimeError(
+                f"Checksum mismatch for {tool} {version} ({target}): "
+                f"expected {expected}, got {digest}"
+            )
 
-    tmp_path.write_bytes(data)
-    tmp_path.chmod(tmp_path.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
-    tmp_path.replace(destination)
-    return destination
+        _publish_binary(destination, data)
+        return destination
 
 
 def _sha256_file(path: Path) -> str:
