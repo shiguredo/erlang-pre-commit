@@ -30,35 +30,37 @@ hooks = [
   { id = "tombi-format", exclude = { glob = ["**/uv.lock"] } },
 ]
 
+# ruff: フォーマッタ・リンタ (公式 pre-commit フック)
+# rev は Ruff のバージョンに対応する
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.16.6"
+hooks = [
+  # --fix 時は check を format より先に実行する
+  { id = "ruff-check", args = ["--fix"], priority = 0 },
+  { id = "ruff-format", priority = 10 },
+]
+
+# ty: 静的型チェッカ (公式 pre-commit フック)
+# rev は ty のバージョンに対応する
+[[repos]]
+repo = "https://github.com/astral-sh/ty-pre-commit"
+rev = "v0.0.78"
+hooks = [
+  { id = "ty", priority = 20 },
+]
+
 # プロジェクト固有のローカルフック
 # priority が小さいほど先に実行される。同じ priority なら並列実行される
 [[repos]]
 repo = "local"
 
-# ruff format: フォーマッタ
+# pytest: 単体テスト
 [[repos.hooks]]
-id = "ruff-format"
-name = "ruff format"
-entry = "uv run ruff format"
-language = "system"
-types = ["python"]
-priority = 0
-
-# ruff check: リンタ
-[[repos.hooks]]
-id = "ruff-check"
-name = "ruff check"
-entry = "uv run ruff check"
-language = "system"
-types = ["python"]
-priority = 10
-
-# ty check: 静的型チェッカ
-[[repos.hooks]]
-id = "ty"
-name = "ty check"
-entry = "uv run ty check src"
+id = "pytest"
+name = "pytest"
+entry = "uv run pytest"
 language = "system"
 types = ["python"]
 pass_filenames = false
-priority = 20
+priority = 30

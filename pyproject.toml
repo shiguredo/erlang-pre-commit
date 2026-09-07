@@ -1,6 +1,6 @@
 [project]
 name = "erlang-pre-commit"
-version = "2026.3.0"
+version = "2026.3.1"
 description = "pre-commit hooks for efmt and elint"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -15,15 +15,18 @@ elint = "erlang_pre_commit.cli:elint"
 
 [dependency-groups]
 dev = [
-  # フォーマッタ・リンタ
-  "ruff",
-  # 静的型チェッカ
-  "ty",
+  # テスト
+  "pytest",
+  "pytest-timeout",
 ]
 
 [build-system]
 requires = ["uv_build"]
 build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+timeout = 10
 
 [tool.ruff]
 line-length = 100
