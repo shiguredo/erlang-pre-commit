@@ -11,6 +11,10 @@
 
 ## develop
 
+## 2026.4.0
+
+**リリース日**: 2026-09-16
+
 - [ADD] eqWAlizer (ELP) の eqwalizer フックを追加する
   - `elp eqwalize-all --bail-on-error` でプロジェクト全体を型検査する
   - Erlang/OTP 27 / 28 / 29 と rebar3 3.24.0 以上が必要
