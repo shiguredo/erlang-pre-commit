@@ -1,6 +1,6 @@
 # Third Party Licenses
 
-このリポジトリのフックは実行時に [efmt](https://github.com/sile/efmt) と [elint](https://github.com/sile/elint) のバイナリを GitHub Releases から取得して利用します。各プロジェクトのライセンス全文を以下に記載します。
+このリポジトリのフックは実行時に [efmt](https://github.com/sile/efmt) / [elint](https://github.com/sile/elint) / [erlang-language-platform (ELP)](https://github.com/WhatsApp/erlang-language-platform) のバイナリを GitHub Releases から取得して利用します。各プロジェクトのライセンス全文を以下に記載します。
 
 ## efmt
 
@@ -276,3 +276,44 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
+
+## erlang-language-platform (ELP)
+
+- Repository: <https://github.com/WhatsApp/erlang-language-platform>
+- License: Apache-2.0 AND MIT
+
+ELP に同梱される eqWAlizer も同じデュアルライセンスです。
+
+### MIT License
+
+<https://github.com/WhatsApp/erlang-language-platform/blob/main/LICENSE-MIT>
+
+```text
+MIT License
+
+Copyright (c) Meta Platforms, Inc. and affiliates.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+### Apache License 2.0
+
+<https://github.com/WhatsApp/erlang-language-platform/blob/main/LICENSE-APACHE>
+
+Apache License 2.0 の全文は efmt の節に記載しています（上流の LICENSE-APACHE とは付録の著作権表示のみ異なります）。

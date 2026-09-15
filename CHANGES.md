@@ -11,6 +11,12 @@
 
 ## develop
 
+- [ADD] eqWAlizer (ELP) の eqwalizer フックを追加する
+  - `elp eqwalize-all --bail-on-error` でプロジェクト全体を型検査する
+  - Erlang/OTP 27 / 28 / 29 と rebar3 3.24.0 以上が必要
+  - macOS (aarch64 / x86_64) と Linux glibc (x86_64 / aarch64) に対応する
+  - @voluntas
+
 ## 2026.3.1
 
 **リリース日**: 2026-09-07
