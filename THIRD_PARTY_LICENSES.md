@@ -280,9 +280,9 @@ THE SOFTWARE.
 ## erlang-language-platform (ELP)
 
 - Repository: <https://github.com/WhatsApp/erlang-language-platform>
-- License: Apache-2.0 AND MIT
+- License: MIT
 
-ELP に同梱される eqWAlizer も同じデュアルライセンスです。
+ELP に同梱される eqWAlizer も同じライセンスです。
 
 ### MIT License
 
@@ -311,9 +311,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-
-### Apache License 2.0
-
-<https://github.com/WhatsApp/erlang-language-platform/blob/main/LICENSE-APACHE>
-
-Apache License 2.0 の全文は efmt の節に記載しています（上流の LICENSE-APACHE とは付録の著作権表示のみ異なります）。

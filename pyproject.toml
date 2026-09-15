@@ -1,6 +1,6 @@
 [project]
 name = "erlang-pre-commit"
-version = "2026.3.1"
+version = "2026.4.0"
 description = "pre-commit hooks for efmt, elint and eqWAlizer (ELP)"
 readme = "README.md"
 requires-python = ">=3.12"
