@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 - [efmt](https://github.com/sile/efmt) と [elint](https://github.com/sile/elint) を [prek](https://prek.j178.dev/) から利用するためのフックです
+- [ELP](https://github.com/WhatsApp/erlang-language-platform) が内包する [eqWAlizer](https://whatsapp.github.io/erlang-language-platform/docs/eqwalizer/reference/) による型検査も利用できます
 - Python パッケージとして配布しますが、実体のバイナリは PyPI ではなく GitHub Releases から取得します
 - 初回実行時に対象プラットフォーム向けのバイナリをダウンロードし、SHA-256 で検証したうえで実行します
 
@@ -12,6 +13,7 @@
 - `efmt` — `efmt -w` でフォーマットする（`*.erl` / `*.hrl` / `*.app.src` / `rebar.config`）
 - `efmt-check` — `efmt -c` でフォーマットを検査する（書き込みなし）
 - `elint` — `elint` でリントする（`*.erl` / `*.hrl`）
+- `eqwalizer` — `elp eqwalize-all --bail-on-error` でプロジェクト全体を型検査する（`*.erl` / `*.hrl` / `rebar.config` / `rebar.config.script` / `rebar.lock` / `.elp.toml` の変更時に実行）
 
 ## prek.toml
 
@@ -37,6 +39,19 @@ hooks = [
 ]
 ```
 
+型検査に `eqwalizer` を使う場合は Erlang/OTP と rebar3 が必要です。
+
+```toml
+[[repos]]
+repo = "https://github.com/shiguredo/erlang-pre-commit"
+rev = "2026.3.0"
+hooks = [
+  { id = "efmt-check" },
+  { id = "elint" },
+  { id = "eqwalizer" },
+]
+```
+
 ```bash
 prek install --prepare-hooks
 prek run --all-files
@@ -44,7 +59,7 @@ prek run --all-files
 
 ## オプション
 
-prek の `args` に渡した引数は、そのまま `efmt` / `elint` に転送されます。
+prek の `args` に渡した引数は、そのまま `efmt` / `elint` / `elp` に転送されます。
 
 ### efmt
 
@@ -116,19 +131,70 @@ hooks = [
 
 意図的な指摘はソース内の `-elint_expect` で抑制できます。プロジェクト設定ファイルはありません。
 
+### eqwalizer
+
+`elp eqwalize-all` の引数を転送できます（詳細は `elp eqwalize-all --help`）。
+
+| オプション | 説明 |
+| --- | --- |
+| `--project <PROJECT>` | プロジェクトのディレクトリまたは `project.json` を指定する（既定は `.`） |
+| `--as <PROFILE>` | rebar3 のプロファイルを指定する（既定は `test`） |
+| `--rebar` | rebar3 でプロジェクトを読み込む |
+| `--connect` | 常駐デーモンを利用して高速化する（初回はデーモンが自動起動する） |
+| `--format <FORMAT>` | 出力形式を指定する（`json` で JSON 出力） |
+| `--stats` | 統計を表示する |
+| `--list-modules` | 統計にモジュール一覧を含める |
+| `--color <WHEN>` | 色付けを制御する（`always` / `never` / `auto`、既定は `always`） |
+
+rebar3 プロジェクト以外で `project.json` を使う例です。
+
+```toml
+[[repos]]
+repo = "https://github.com/shiguredo/erlang-pre-commit"
+rev = "2026.3.0"
+hooks = [
+  { id = "eqwalizer", args = ["--project=project.json", "--color=never"] },
+]
+```
+
 ## 対応プラットフォーム
+
+efmt / elint と eqwalizer で対応プラットフォームが異なります。
+
+efmt / elint:
 
 - macOS `aarch64` (Apple Silicon)
 - Linux (musl) `x86_64`
 - Linux (musl) `aarch64`
 
-Windows は非対応です。
+eqwalizer:
+
+- macOS `aarch64` (Apple Silicon)
+- macOS `x86_64`
+- Linux (glibc) `x86_64`
+- Linux (glibc) `aarch64`
+
+eqwalizer は ELP が glibc 向けバイナリのみを配布しているため Linux (musl) では利用できません。Windows は非対応です。
 
 ## 要件
 
 - [prek](https://prek.j178.dev/)
 - Python 3.12 以上
 - 初回実行時に GitHub Releases へのネットワークアクセス
+- eqwalizer を利用する場合は次も必要です
+  - Erlang/OTP 27、28、29 のいずれか（`erl` に PATH が通っていること）
+  - rebar3 3.24.0 以上
+  - 対象プロジェクトが `eqwalizer_support` に依存していること
+
+```erlang
+{deps, [
+  {eqwalizer_support,
+    {git_subdir,
+        "https://github.com/whatsapp/eqwalizer.git",
+        {branch, "main"},
+        "eqwalizer_support"}}
+]}.
+```
 
 ## efmt ライセンス
 
@@ -184,6 +250,34 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+```
+
+## eqWAlizer (ELP) ライセンス
+
+[erlang-language-platform](https://github.com/WhatsApp/erlang-language-platform) は Apache-2.0 と MIT のデュアルライセンスです。Apache License 2.0 を含む全文は [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) を参照してください。
+
+```text
+MIT License
+
+Copyright (c) Meta Platforms, Inc. and affiliates.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
 
 ## ライセンス

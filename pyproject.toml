@@ -1,7 +1,7 @@
 [project]
 name = "erlang-pre-commit"
 version = "2026.3.1"
-description = "pre-commit hooks for efmt and elint"
+description = "pre-commit hooks for efmt, elint and eqWAlizer (ELP)"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
@@ -12,6 +12,7 @@ authors = [
 [project.scripts]
 efmt = "erlang_pre_commit.cli:efmt"
 elint = "erlang_pre_commit.cli:elint"
+elp = "erlang_pre_commit.cli:elp"
 
 [dependency-groups]
 dev = [
