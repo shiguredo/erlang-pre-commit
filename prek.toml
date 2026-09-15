@@ -23,7 +23,7 @@ hooks = [
 # rev は prek auto-update で更新する
 [[repos]]
 repo = "https://github.com/tombi-toml/tombi-pre-commit"
-rev = "v1.5.0"
+rev = "v1.5.5"
 hooks = [
   # uv.lock は自動生成ファイルなので tombi の対象外にする
   { id = "tombi-lint", exclude = { glob = ["**/uv.lock"] } },
@@ -34,7 +34,7 @@ hooks = [
 # rev は Ruff のバージョンに対応する
 [[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.16.6"
+rev = "v0.16.7"
 hooks = [
   # --fix 時は check を format より先に実行する
   { id = "ruff-check", args = ["--fix"], priority = 0 },
@@ -45,7 +45,7 @@ hooks = [
 # rev は ty のバージョンに対応する
 [[repos]]
 repo = "https://github.com/astral-sh/ty-pre-commit"
-rev = "v0.0.78"
+rev = "v0.0.81"
 hooks = [
   { id = "ty", priority = 20 },
 ]
