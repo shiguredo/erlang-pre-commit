@@ -17,6 +17,12 @@
   - macOS (aarch64 / x86_64) と Linux glibc (x86_64 / aarch64) に対応する
   - @voluntas
 
+### misc
+
+- GitHub Actions の CI を追加する
+  - efmt-check / elint / eqwalizer を検証用の Erlang プロジェクトで実行する
+  - @voluntas
+
 ## 2026.3.1
 
 **リリース日**: 2026-09-07

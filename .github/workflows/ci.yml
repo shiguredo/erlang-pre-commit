@@ -1,0 +1,114 @@
+name: ci
+
+on:
+  push:
+    paths-ignore:
+      - "LICENSE"
+      - "**.md"
+
+jobs:
+  # prek.toml のフック (ruff / ty / pytest / tombi) を実行する
+  check:
+    runs-on: ubuntu-slim
+    # prek の hook 環境準備 (初回や cache miss) を見込んで余裕を持たせる
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # ローカルフック (pytest) と ty フックが uv を呼ぶため uv を先に用意する
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+      - uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece # v3.0.0
+
+  # .pre-commit-hooks.yaml のフックが実際の Erlang プロジェクトで動作するか確認する
+  hooks:
+    # shiguredo/setup-erlang は Ubuntu 24.04 / 26.04 向けのため ubuntu-slim は使わない
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # ビルド済みの Erlang/OTP 29.0.6 + AWS-LC v5.8.0 を使う
+      - uses: shiguredo/setup-erlang@main
+        with:
+          otp-version: "29.0.6"
+          aws-lc-version: "v5.8.0"
+
+      # eqwalizer は rebar3 3.24.0 以上でプロジェクトを読み込む
+      - name: rebar3 をインストールする
+        run: |
+          curl -fsSL --retry 3 -o "${RUNNER_TEMP}/rebar3" \
+            https://github.com/erlang/rebar3/releases/download/3.27.0/rebar3
+          chmod +x "${RUNNER_TEMP}/rebar3"
+          echo "${RUNNER_TEMP}" >> "${GITHUB_PATH}"
+
+      # prek だけインストールする (フックの検証は try-repo で行う)
+      - uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece # v3.0.0
+        with:
+          install-only: true
+
+      # 検証用の Erlang プロジェクトを一時ディレクトリに git リポジトリとして用意する
+      - name: 検証用プロジェクトを用意する
+        run: |
+          cp -R tests/fixtures/erlang_project "${RUNNER_TEMP}/fixture"
+          cd "${RUNNER_TEMP}/fixture"
+          git init -q
+          git add -A
+          git -c user.name=github-actions -c user.email=github-actions@example.com commit -qm fixture
+
+      # efmt-check / elint / eqwalizer が成功することを確認する
+      - name: フックが成功することを確認する
+        working-directory: ${{ runner.temp }}/fixture
+        run: prek try-repo "${GITHUB_WORKSPACE}" efmt-check elint eqwalizer --all-files
+
+      # 未整形のファイルを efmt-check が検出することを確認する
+      - name: efmt-check が未整形を検出することを確認する
+        working-directory: ${{ runner.temp }}/fixture
+        run: |
+          printf '%s\n' \
+            '-module(unformatted).' \
+            '' \
+            '-export([identity/1]).' \
+            '' \
+            'identity(Value)->Value.' > src/unformatted.erl
+          git add -A
+          git -c user.name=github-actions -c user.email=github-actions@example.com commit -qm unformatted
+          if prek try-repo "${GITHUB_WORKSPACE}" efmt-check --all-files; then
+            echo "efmt-check が未整形を検出しなかった" >&2
+            exit 1
+          fi
+
+      # if 式を elint が検出することを確認する
+      - name: elint が指摘を検出することを確認する
+        working-directory: ${{ runner.temp }}/fixture
+        run: |
+          printf '%s\n' \
+            '-module(lint_bad).' \
+            '' \
+            '-export([classify/1]).' \
+            '' \
+            'classify(Number) ->' \
+            '    if' \
+            '        Number < 0 ->' \
+            '            negative;' \
+            '        Number > 0 ->' \
+            '            positive;' \
+            '        true ->' \
+            '            zero' \
+            '    end.' > src/lint_bad.erl
+          git add -A
+          git -c user.name=github-actions -c user.email=github-actions@example.com commit -qm lint_bad
+          if prek try-repo "${GITHUB_WORKSPACE}" elint --all-files; then
+            echo "elint が指摘を検出しなかった" >&2
+            exit 1
+          fi
+
+      # 型エラーを eqwalizer が検出することを確認する
+      - name: eqwalizer が型エラーを検出することを確認する
+        working-directory: ${{ runner.temp }}/fixture
+        run: |
+          printf '\n-spec broken() -> integer().\nbroken() ->\n    "not an integer".\n' >> src/fixture_app.erl
+          git add -A
+          git -c user.name=github-actions -c user.email=github-actions@example.com commit -qm broken
+          if prek try-repo "${GITHUB_WORKSPACE}" eqwalizer --all-files; then
+            echo "eqwalizer が型エラーを検出しなかった" >&2
+            exit 1
+          fi

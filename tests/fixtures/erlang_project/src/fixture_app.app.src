@@ -1,0 +1,7 @@
+{application, fixture_app,
+ [{description, "erlang-pre-commit のフック検証用アプリケーション"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {applications, [kernel, stdlib]},
+  {env, []},
+  {modules, []}]}.
