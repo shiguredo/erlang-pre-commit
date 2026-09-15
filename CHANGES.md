@@ -16,6 +16,9 @@
   - Erlang/OTP 27 / 28 / 29 と rebar3 3.24.0 以上が必要
   - macOS (aarch64 / x86_64) と Linux glibc (x86_64 / aarch64) に対応する
   - @voluntas
+- [FIX] キャッシュ済みバイナリの実行ビットが落ちていると PermissionError で失敗するのを修正する
+  - SHA-256 が一致していれば chmod で実行ビットを復旧する
+  - @voluntas
 
 ### misc
 

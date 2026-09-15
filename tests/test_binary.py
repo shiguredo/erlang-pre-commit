@@ -15,6 +15,7 @@ import pytest
 from erlang_pre_commit._binary import (
     _elp_otp_asset,
     _elp_target,
+    _ensure_ready,
     _extract_elp,
     _publish_binary,
     elp_asset_url,
@@ -89,6 +90,57 @@ def test_with_suffix_collides_for_binary_destination_names() -> None:
     """
     destination = Path("efmt-0.21.1-aarch64-apple-darwin")
     assert destination.with_suffix(".tmp").name == "efmt-0.21.tmp"
+
+
+def test_ensure_ready_restores_executable_bit(tmp_path: Path) -> None:
+    """
+    実行ビットが落ちたキャッシュでも digest が一致すれば再利用し、実行ビットを復旧する。
+
+    パーミッションを保持しない方法でキャッシュをコピーした場合に
+    os.execv が PermissionError になるのを防ぐ。
+    """
+    payload = b"cached binary"
+    destination = tmp_path / "elp-2026-08-10-aarch64-apple-darwin-otp-29"
+    destination.write_bytes(payload)
+    destination.chmod(0o600)
+
+    assert _ensure_ready(destination, hashlib.sha256(payload).hexdigest())
+
+    assert destination.stat().st_mode & stat.S_IXUSR
+
+
+def test_ensure_ready_keeps_existing_mode(tmp_path: Path) -> None:
+    """
+    実行ビットが既にあるキャッシュのモードは変更しないことを確認する。
+    """
+    payload = b"cached binary"
+    destination = tmp_path / "elp-2026-08-10-aarch64-apple-darwin-otp-29"
+    destination.write_bytes(payload)
+    destination.chmod(0o755)
+
+    assert _ensure_ready(destination, hashlib.sha256(payload).hexdigest())
+
+    assert (destination.stat().st_mode & 0o777) == 0o755
+
+
+def test_ensure_ready_rejects_stale_binary(tmp_path: Path) -> None:
+    """
+    digest が一致しない古いバイナリは再利用せず、再ダウンロードの対象にする。
+    """
+    destination = tmp_path / "elp-2026-08-10-aarch64-apple-darwin-otp-29"
+    destination.write_bytes(b"old binary")
+    destination.chmod(0o755)
+
+    assert not _ensure_ready(destination, hashlib.sha256(b"new binary").hexdigest())
+
+
+def test_ensure_ready_rejects_missing_binary(tmp_path: Path) -> None:
+    """
+    キャッシュが無い場合は再ダウンロードの対象にする。
+    """
+    destination = tmp_path / "elp-2026-08-10-aarch64-apple-darwin-otp-29"
+
+    assert not _ensure_ready(destination, hashlib.sha256(b"binary").hexdigest())
 
 
 def test_elp_target_returns_elp_asset_names() -> None:

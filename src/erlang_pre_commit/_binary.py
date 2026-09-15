@@ -162,8 +162,19 @@ def _bin_dir() -> Path:
     return Path(__file__).resolve().parent / "_bins"
 
 
-def _is_ready(destination: Path, expected: str) -> bool:
-    return destination.is_file() and _sha256_file(destination) == expected
+def _ensure_ready(destination: Path, expected: str) -> bool:
+    """
+    キャッシュ済みバイナリが利用可能かを返し、必要なら実行ビットを付与する。
+
+    パーミッションを保持しない方法でキャッシュをコピーすると実行ビットが
+    落ちることがある。digest が一致していれば再ダウンロードせずに復旧する。
+    """
+    if not destination.is_file() or _sha256_file(destination) != expected:
+        return False
+    mode = destination.stat().st_mode
+    if not mode & (stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH):
+        destination.chmod(mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+    return True
 
 
 @contextmanager
@@ -264,13 +275,13 @@ def _ensure_elp_binary() -> Path:
     binary_checksum = _elp_checksum(ELP_BINARY_CHECKSUMS, target, otp_asset)
     destination = _bin_dir() / f"elp-{ELP_VERSION}-{target}-otp-{otp_asset}"
 
-    if _is_ready(destination, binary_checksum):
+    if _ensure_ready(destination, binary_checksum):
         return destination
 
     lock_path = destination.with_name(f".{destination.name}.lock")
     with _exclusive_file_lock(lock_path):
         # 待機中に他プロセスが配置済みならダウンロードしない
-        if _is_ready(destination, binary_checksum):
+        if _ensure_ready(destination, binary_checksum):
             return destination
 
         asset_target = f"{target}-otp-{otp_asset}"
@@ -302,13 +313,13 @@ def _ensure_release_binary(tool: str, version: str, release_tag: str) -> Path:
     expected = _expected_checksum(tool, target)
     destination = _bin_dir() / f"{tool}-{version}-{target}"
 
-    if _is_ready(destination, expected):
+    if _ensure_ready(destination, expected):
         return destination
 
     lock_path = destination.with_name(f".{destination.name}.lock")
     with _exclusive_file_lock(lock_path):
         # 待機中に他プロセスが配置済みならダウンロードしない
-        if _is_ready(destination, expected):
+        if _ensure_ready(destination, expected):
             return destination
 
         url = release_asset_url(tool, version, release_tag, target)
