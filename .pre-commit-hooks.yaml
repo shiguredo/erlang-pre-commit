@@ -18,3 +18,12 @@
   entry: elint
   language: python
   files: \.(erl|hrl)$
+
+- id: eqwalizer
+  name: eqwalizer
+  description: eqWAlizer (ELP) で Erlang の型を検査する
+  entry: elp eqwalize-all --bail-on-error
+  language: python
+  # プロジェクト全体を型検査するため、プロジェクト定義に影響するファイルも対象にする
+  files: (\.(erl|hrl)$)|(^|/)rebar\.config(\.script)?$|(^|/)rebar\.lock$|(^|/)\.elp\.toml$
+  pass_filenames: false

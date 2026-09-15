@@ -1,0 +1,3 @@
+# rebar3 のビルド成果物とロックファイル
+_build/
+rebar.lock

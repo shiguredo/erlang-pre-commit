@@ -1,4 +1,4 @@
-"""ダウンロード済みの efmt / elint バイナリを exec するコンソールエントリポイント。"""
+"""ダウンロード済みの efmt / elint / ELP バイナリを exec するコンソールエントリポイント。"""
 
 from __future__ import annotations
 
@@ -19,3 +19,7 @@ def efmt() -> None:
 
 def elint() -> None:
     _exec("elint")
+
+
+def elp() -> None:
+    _exec("elp")
