@@ -26,11 +26,11 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # ビルド済みの Erlang/OTP 29.0.6 + AWS-LC v5.8.0 を使う
+      # ビルド済みの Erlang/OTP 29.1.1 + AWS-LC v5.9.0 を使う
       - uses: shiguredo/setup-erlang@main
         with:
-          otp-version: "29.0.6"
-          aws-lc-version: "v5.8.0"
+          otp-version: "29.1.1"
+          aws-lc-version: "v5.9.0"
 
       # eqwalizer は rebar3 3.24.0 以上でプロジェクトを読み込む
       - name: rebar3 をインストールする

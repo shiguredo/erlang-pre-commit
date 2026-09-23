@@ -11,6 +11,11 @@
 
 ## develop
 
+### misc
+
+- GitHub Actions の CI の Erlang/OTP を 29.1.1 / AWS-LC v5.9.0 に上げる
+  - @voluntas
+
 ## 2026.4.0
 
 **リリース日**: 2026-09-16
