@@ -6,7 +6,7 @@ from __future__ import annotations
 EFMT_VERSION = "0.21.1"
 ELINT_VERSION = "0.1.1"
 # ELP は日付ベースのタグを使う (リリースタグとバージョンが同一)
-ELP_VERSION = "2026-08-10"
+ELP_VERSION = "2026-10-14"
 
 # GitHub リリースのタグ
 EFMT_RELEASE_TAG = "v0.21.1"
@@ -40,33 +40,35 @@ CHECKSUMS: dict[str, dict[str, str]] = {
 
 # ELP のアセットの OTP 表記: Erlang/OTP のメジャーリリース -> アセットの OTP 表記
 # ELP は OTP のメジャーリリースごとに別のバイナリを配布する
+# アセット名は ELP がビルドした OTP の版であり、メジャー番号とは一致しない
+# 2026-10-14 では OTP 29 向けが otp-29.1 である
 ELP_OTP_ASSETS: dict[str, str] = {
     "27": "27.3",
     "28": "28.5",
-    "29": "29",
+    "29": "29.1",
 }
 
 # ELP のリリースアセット (tar.gz) の sha256: target -> OTP 表記 -> digest
 ELP_ARCHIVE_CHECKSUMS: dict[str, dict[str, str]] = {
     "macos-aarch64-apple-darwin": {
-        "27.3": "7317a9934edc411e94392d5cc720f2e0c18112e7959060678aaef4d6dacdd9f2",
-        "28.5": "2960208a24b2b97e736e1571b350db93af0010f916d136f923904a157cc07c55",
-        "29": "bd4490661df4b85f65541c9ce042142396730040486bdf35cb5df1b2bac22761",
+        "27.3": "b16fcae37bbae2def2163a4779ef09febd9904ec3382698a0032e118c770a7dc",
+        "28.5": "e7c4c0a9876f9e17c806453627d89f13b25d22b43e0481117a6934d2a28377d7",
+        "29.1": "3311edc6b4c1d6ed7cb6a8a4e37e3d8d19ffe879d006162d33753d2c72fdcdd4",
     },
     "macos-x86_64-apple-darwin": {
-        "27.3": "d7c739a6b23ba7bfc0fc8481619ec55e41257d08cb7aa8b16499fb4c4f5e38e2",
-        "28.5": "3402849bb1c8355dff18ce51e81cddd67ee0fc90d449b9e1a4c8d3d1ab38d5ce",
-        "29": "2451254c84aaeefb0dd928387fd5927e537767c251c282bef33d4f79dd4d273b",
+        "27.3": "00cafdddb5c898ed1b045101f73134b52ff153af15eee42cba89aca6dcb97c42",
+        "28.5": "27f5f3ea6ab7213f0e3d9a93245dc59a501d92cc85edb11a8e421f0bdcf05e24",
+        "29.1": "2eb4b2a7a17ff96f71ff456175db7c0cc265a1cee1e616ddbfb0c02771b51ed0",
     },
     "linux-x86_64-unknown-linux-gnu": {
-        "27.3": "c0e672a8381b5ea787e94a872847567b10d9b4d0053ca1148f4b236f61af3c63",
-        "28.5": "7732bf3f52b2fc08b6f45428fb8a14ee7a13d38ae4582e6fb4fec9176ce6e0f0",
-        "29": "711ea859b9c998eb990f9e647e03029c3aa1dfb61b177e6de5bf95c69b62695b",
+        "27.3": "797315627b37cda882c8f9c1cd6c1207700accae504e2651e3bddfa4af4d7a73",
+        "28.5": "e93c4b10a446c330c1db85a53f101bfebe88d19373b1213564c914953ddf5ec0",
+        "29.1": "3251f2d3550adf28f33529686103fabb1fbf0b0e7deb5cd06b93dab06b8647ea",
     },
     "linux-aarch64-unknown-linux-gnu": {
-        "27.3": "0af71bd62e95998b7e57edd2083141b60edab51d0a2da988e6e71abb88cd3f34",
-        "28.5": "eede711c74aa93d69fd3a1b65fb88f10169fcbffb8d2fc830486033d82f5ccef",
-        "29": "91c98287f5738660766e572ecdc1dff9b06d041ead1b463f0422dc5bfc6499fc",
+        "27.3": "282f5f26105c6bc64e17745a38ba5718300c51072d34afbb2a03163dbc4abc71",
+        "28.5": "2c30a04a746ae29400f26045ebed25277cf091512488e6dfa5727eac70d6beb9",
+        "29.1": "c15b7760222d9fed417b996790cd14aaf949fbe3ef113240bddc2fa7e73aec21",
     },
 }
 
@@ -74,23 +76,23 @@ ELP_ARCHIVE_CHECKSUMS: dict[str, dict[str, str]] = {
 # キャッシュ済みバイナリの検証に使う (アーカイブの digest とは別物)
 ELP_BINARY_CHECKSUMS: dict[str, dict[str, str]] = {
     "macos-aarch64-apple-darwin": {
-        "27.3": "cb161dbb19409dd6df3ff5e14f411f6f5f6c9d006ec28696e7f94bea292ccbbb",
-        "28.5": "042bf4df864376f50a70bca9f79ea05b4cbc22067003f9a5ab7f393eb19371b3",
-        "29": "7f7fb5d802a8de5a9ca59c6170ccb4c28a6978c327012a89e624fea8c1798dca",
+        "27.3": "009bb77ed63f0c58cece850dfe8c894a52dbcd3eed4e5c36557c5e8bc1b19877",
+        "28.5": "01c0386d5fd500a3596f8f1d322fe5490d6f213f50eb44047564b2fe59cbf04d",
+        "29.1": "d1e20d949ccc586f49633988ab06ec3465f06250e7847f0b2ff5dac948493519",
     },
     "macos-x86_64-apple-darwin": {
-        "27.3": "3f697020211985f9ebd7804a281b8e7d65a2fb487ca56eb04c02577a0ffe5ef1",
-        "28.5": "01f56a58802992c44c34c2e7a49f861c243dd2feda0d02847bc5dc0a69cc5b62",
-        "29": "0ac8e06baaa197417c6b043cddabc204f5b263985f7683a9f68d49743970a1be",
+        "27.3": "6ae3ebf0379c1074d09d66986a97f8dadd11403821b7d5449b12924af7289502",
+        "28.5": "b5aa400f1374f2e1b564d9793ec340cb575dffad16814c87185add9105da0f83",
+        "29.1": "28e75159ed88f57f08d76f30e485e0054e3ac43f3b89acb0071ac0fb66f1911f",
     },
     "linux-x86_64-unknown-linux-gnu": {
-        "27.3": "46fcb470e887534e53217f3b4c2dc8e0b1c9a6b1064dd6b8dc087e0fd6b2c731",
-        "28.5": "3eac7aca772cdc5d48defc77aee94fb7299b2589d1d275b7ca7563f9f6149e92",
-        "29": "f3859d651c1c79774bb47b0e5589e9308a5c8552f494b1bf068af40522dfb41d",
+        "27.3": "93b576c780280cdeb864d904918b5a9e11bbecc1878db20a01b9984bdc239b17",
+        "28.5": "5198720c0ac3410c8367003cd973be5a88abb3281a301c05a06e9ef11b33cb75",
+        "29.1": "2d06f74f96eac6a1004a63e101eece1a1faf2dc4c18b0b7f691a640b893ec079",
     },
     "linux-aarch64-unknown-linux-gnu": {
-        "27.3": "f65114826e3581fe8ad8d66757fbfc28a73e988e2676360795fd40c0bcb94b8f",
-        "28.5": "c4690828e21e3bcc0e60e2e02535204b282dce32e220e18daf403422cdea5c1b",
-        "29": "39b20e2d6c75636a304a70ce0831b2bae22600086824b4c92c5e114f28a7144e",
+        "27.3": "2a5e2d9749623288fc2122fae9b3a3c7e205792987481804f496308be2c7b7b2",
+        "28.5": "87fb23ce3b501666c1e705ab7613caca8e9df6c26014232bacfbd8f9cf9222df",
+        "29.1": "aca9382ba90b042497c4e4503f92b0a78288d4e76dc1f7d5eb72e04f699de1e0",
     },
 }

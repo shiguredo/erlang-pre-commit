@@ -100,7 +100,7 @@ def test_ensure_ready_restores_executable_bit(tmp_path: Path) -> None:
     os.execv が PermissionError になるのを防ぐ。
     """
     payload = b"cached binary"
-    destination = tmp_path / "elp-2026-08-10-aarch64-apple-darwin-otp-29"
+    destination = tmp_path / "elp-2026-10-14-aarch64-apple-darwin-otp-29.1"
     destination.write_bytes(payload)
     destination.chmod(0o600)
 
@@ -114,7 +114,7 @@ def test_ensure_ready_keeps_existing_mode(tmp_path: Path) -> None:
     実行ビットが既にあるキャッシュのモードは変更しないことを確認する。
     """
     payload = b"cached binary"
-    destination = tmp_path / "elp-2026-08-10-aarch64-apple-darwin-otp-29"
+    destination = tmp_path / "elp-2026-10-14-aarch64-apple-darwin-otp-29.1"
     destination.write_bytes(payload)
     destination.chmod(0o755)
 
@@ -127,7 +127,7 @@ def test_ensure_ready_rejects_stale_binary(tmp_path: Path) -> None:
     """
     digest が一致しない古いバイナリは再利用せず、再ダウンロードの対象にする。
     """
-    destination = tmp_path / "elp-2026-08-10-aarch64-apple-darwin-otp-29"
+    destination = tmp_path / "elp-2026-10-14-aarch64-apple-darwin-otp-29.1"
     destination.write_bytes(b"old binary")
     destination.chmod(0o755)
 
@@ -138,7 +138,7 @@ def test_ensure_ready_rejects_missing_binary(tmp_path: Path) -> None:
     """
     キャッシュが無い場合は再ダウンロードの対象にする。
     """
-    destination = tmp_path / "elp-2026-08-10-aarch64-apple-darwin-otp-29"
+    destination = tmp_path / "elp-2026-10-14-aarch64-apple-darwin-otp-29.1"
 
     assert not _ensure_ready(destination, hashlib.sha256(b"binary").hexdigest())
 
@@ -172,7 +172,7 @@ def test_elp_otp_asset_maps_supported_releases() -> None:
     """
     assert _elp_otp_asset("27") == "27.3"
     assert _elp_otp_asset("28") == "28.5"
-    assert _elp_otp_asset("29") == "29"
+    assert _elp_otp_asset("29") == "29.1"
 
 
 def test_elp_otp_asset_rejects_unsupported_release() -> None:
@@ -191,7 +191,7 @@ def test_elp_asset_url_pins_the_release_tag() -> None:
     """
     assert elp_asset_url("macos-aarch64-apple-darwin", "28.5") == (
         "https://github.com/WhatsApp/erlang-language-platform/releases/download/"
-        "2026-08-10/elp-macos-aarch64-apple-darwin-otp-28.5.tar.gz"
+        "2026-10-14/elp-macos-aarch64-apple-darwin-otp-28.5.tar.gz"
     )
 
 
@@ -206,7 +206,7 @@ def test_elp_checksums_cover_all_supported_variants() -> None:
         "linux-x86_64-unknown-linux-gnu",
         "linux-aarch64-unknown-linux-gnu",
     ]
-    otp_assets = ["27.3", "28.5", "29"]
+    otp_assets = ["27.3", "28.5", "29.1"]
     for target in targets:
         for otp_asset in otp_assets:
             archive = ELP_ARCHIVE_CHECKSUMS.get(target, {}).get(otp_asset)

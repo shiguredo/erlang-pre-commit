@@ -11,6 +11,20 @@
 
 ## develop
 
+## 2026.5.0
+
+**リリース日**: 2026-11-10
+
+- [UPDATE] ELP を 2026-10-14 に更新する
+  - OTP 29 向けの配布物を otp-29.1 に切り替える
+  - eqwalizer_support は ELP が同梱するため、プロジェクトの依存には不要になる
+  - @voluntas
+
+### misc
+
+- GitHub Actions の CI の Erlang/OTP を 29.1.1 / AWS-LC v5.9.0 に上げる
+  - @voluntas
+
 ## 2026.4.0
 
 **リリース日**: 2026-09-16
