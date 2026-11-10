@@ -184,15 +184,16 @@ eqwalizer は ELP が glibc 向けバイナリのみを配布しているため 
 - eqwalizer を利用する場合は次も必要です
   - Erlang/OTP 27、28、29 のいずれか（`erl` に PATH が通っていること）
   - rebar3 3.24.0 以上
-  - 対象プロジェクトが `eqwalizer_support` に依存していること
+
+ELP は `eqwalizer_support` を同梱し、プロジェクトへ自動で追加します。Dialyzer のように `eqwalizer` 型を未知の型として扱うツールを併用する場合は、依存に追加します。その場合 ELP は同梱版ではなく、プロジェクトの依存を使います。
 
 ```erlang
 {deps, [
   {eqwalizer_support,
     {git_subdir,
-        "https://github.com/whatsapp/eqwalizer.git",
+        "https://github.com/whatsapp/erlang-language-platform.git",
         {branch, "main"},
-        "eqwalizer_support"}}
+        "eqwalizer/eqwalizer_support"}}
 ]}.
 ```
 
