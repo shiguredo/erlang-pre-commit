@@ -6,7 +6,7 @@ from __future__ import annotations
 EFMT_VERSION = "0.21.1"
 ELINT_VERSION = "0.1.1"
 # ELP は日付ベースのタグを使う (リリースタグとバージョンが同一)
-ELP_VERSION = "2026-10-14"
+ELP_VERSION = "2026-11-20"
 
 # GitHub リリースのタグ
 EFMT_RELEASE_TAG = "v0.21.1"
@@ -46,16 +46,16 @@ ELP_OTP_ASSET = "29.1"
 # ELP のリリースアセット (tar.gz) の sha256: target -> digest
 ELP_ARCHIVE_CHECKSUMS: dict[str, str] = {
     "macos-aarch64-apple-darwin": (
-        "3311edc6b4c1d6ed7cb6a8a4e37e3d8d19ffe879d006162d33753d2c72fdcdd4"
+        "45d185fe2ddae79df5e50e10254520be0dd86f181c43af8f9f5ba9e3f549440d"
     ),
     "macos-x86_64-apple-darwin": (
-        "2eb4b2a7a17ff96f71ff456175db7c0cc265a1cee1e616ddbfb0c02771b51ed0"
+        "eb5a267bebd33642791c684c46d3caadd669e336819a804d113bfd67a9183dcd"
     ),
     "linux-x86_64-unknown-linux-gnu": (
-        "3251f2d3550adf28f33529686103fabb1fbf0b0e7deb5cd06b93dab06b8647ea"
+        "30f726acc7a1a941bffdb4c117d7a147fcf10c9b302fa8cd71bd31dae3bc28d2"
     ),
     "linux-aarch64-unknown-linux-gnu": (
-        "c15b7760222d9fed417b996790cd14aaf949fbe3ef113240bddc2fa7e73aec21"
+        "b17aebea19a3fac8bc2c6c15f1267c8926df4c18c8791637c7a231a76322340c"
     ),
 }
 
@@ -63,15 +63,15 @@ ELP_ARCHIVE_CHECKSUMS: dict[str, str] = {
 # キャッシュ済みバイナリの検証に使う (アーカイブの digest とは別物)
 ELP_BINARY_CHECKSUMS: dict[str, str] = {
     "macos-aarch64-apple-darwin": (
-        "d1e20d949ccc586f49633988ab06ec3465f06250e7847f0b2ff5dac948493519"
+        "b11c4aba12a9ddb2821241ea378fdf7d66e07d512caa2697f0590b4648daaaa8"
     ),
     "macos-x86_64-apple-darwin": (
-        "28e75159ed88f57f08d76f30e485e0054e3ac43f3b89acb0071ac0fb66f1911f"
+        "f4315729993982b55ec0a55f288aaec2c37ad0eb9064ca87d2444bac91dab34f"
     ),
     "linux-x86_64-unknown-linux-gnu": (
-        "2d06f74f96eac6a1004a63e101eece1a1faf2dc4c18b0b7f691a640b893ec079"
+        "b9e4ad78dc6527aef7d6f042dd909972cbad68d4c100413d4485614a3d38f8cd"
     ),
     "linux-aarch64-unknown-linux-gnu": (
-        "aca9382ba90b042497c4e4503f92b0a78288d4e76dc1f7d5eb72e04f699de1e0"
+        "61ee40e163d578ea06d1d8f857b81c11971609c8807cb898c9921039bbd2beae"
     ),
 }

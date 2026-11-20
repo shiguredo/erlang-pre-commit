@@ -100,7 +100,7 @@ def test_ensure_ready_restores_executable_bit(tmp_path: Path) -> None:
     os.execv が PermissionError になるのを防ぐ。
     """
     payload = b"cached binary"
-    destination = tmp_path / "elp-2026-10-14-aarch64-apple-darwin-otp-29.1"
+    destination = tmp_path / "elp-2026-11-20-aarch64-apple-darwin-otp-29.1"
     destination.write_bytes(payload)
     destination.chmod(0o600)
 
@@ -114,7 +114,7 @@ def test_ensure_ready_keeps_existing_mode(tmp_path: Path) -> None:
     実行ビットが既にあるキャッシュのモードは変更しないことを確認する。
     """
     payload = b"cached binary"
-    destination = tmp_path / "elp-2026-10-14-aarch64-apple-darwin-otp-29.1"
+    destination = tmp_path / "elp-2026-11-20-aarch64-apple-darwin-otp-29.1"
     destination.write_bytes(payload)
     destination.chmod(0o755)
 
@@ -127,7 +127,7 @@ def test_ensure_ready_rejects_stale_binary(tmp_path: Path) -> None:
     """
     digest が一致しない古いバイナリは再利用せず、再ダウンロードの対象にする。
     """
-    destination = tmp_path / "elp-2026-10-14-aarch64-apple-darwin-otp-29.1"
+    destination = tmp_path / "elp-2026-11-20-aarch64-apple-darwin-otp-29.1"
     destination.write_bytes(b"old binary")
     destination.chmod(0o755)
 
@@ -138,7 +138,7 @@ def test_ensure_ready_rejects_missing_binary(tmp_path: Path) -> None:
     """
     キャッシュが無い場合は再ダウンロードの対象にする。
     """
-    destination = tmp_path / "elp-2026-10-14-aarch64-apple-darwin-otp-29.1"
+    destination = tmp_path / "elp-2026-11-20-aarch64-apple-darwin-otp-29.1"
 
     assert not _ensure_ready(destination, hashlib.sha256(b"binary").hexdigest())
 
@@ -196,7 +196,7 @@ def test_elp_asset_url_pins_the_release_tag() -> None:
     """
     assert elp_asset_url("macos-aarch64-apple-darwin") == (
         "https://github.com/WhatsApp/erlang-language-platform/releases/download/"
-        "2026-10-14/elp-macos-aarch64-apple-darwin-otp-29.1.tar.gz"
+        "2026-11-20/elp-macos-aarch64-apple-darwin-otp-29.1.tar.gz"
     )
 
 

@@ -15,6 +15,8 @@
   - OTP 27 / 28 では eqwalizer フックが理由付きのエラーで停止する
   - 取得する ELP のアセットを otp-29.1 固定にする
   - @voluntas
+- [UPDATE] ELP を 2026-11-20 に更新する
+  - @voluntas
 
 ## 2026.5.0
 
