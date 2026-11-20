@@ -6,7 +6,7 @@ from __future__ import annotations
 EFMT_VERSION = "0.21.1"
 ELINT_VERSION = "0.1.1"
 # ELP は日付ベースのタグを使う (リリースタグとバージョンが同一)
-ELP_VERSION = "2026-10-14"
+ELP_VERSION = "2026-11-20"
 
 # GitHub リリースのタグ
 EFMT_RELEASE_TAG = "v0.21.1"
@@ -38,61 +38,40 @@ CHECKSUMS: dict[str, dict[str, str]] = {
     },
 }
 
-# ELP のアセットの OTP 表記: Erlang/OTP のメジャーリリース -> アセットの OTP 表記
-# ELP は OTP のメジャーリリースごとに別のバイナリを配布する
+# eqwalizer は Erlang/OTP 29 系のみを対象とする
 # アセット名は ELP がビルドした OTP の版であり、メジャー番号とは一致しない
-# 2026-10-14 では OTP 29 向けが otp-29.1 である
-ELP_OTP_ASSETS: dict[str, str] = {
-    "27": "27.3",
-    "28": "28.5",
-    "29": "29.1",
+ELP_OTP_RELEASE = "29"
+ELP_OTP_ASSET = "29.1"
+
+# ELP のリリースアセット (tar.gz) の sha256: target -> digest
+ELP_ARCHIVE_CHECKSUMS: dict[str, str] = {
+    "macos-aarch64-apple-darwin": (
+        "45d185fe2ddae79df5e50e10254520be0dd86f181c43af8f9f5ba9e3f549440d"
+    ),
+    "macos-x86_64-apple-darwin": (
+        "eb5a267bebd33642791c684c46d3caadd669e336819a804d113bfd67a9183dcd"
+    ),
+    "linux-x86_64-unknown-linux-gnu": (
+        "30f726acc7a1a941bffdb4c117d7a147fcf10c9b302fa8cd71bd31dae3bc28d2"
+    ),
+    "linux-aarch64-unknown-linux-gnu": (
+        "b17aebea19a3fac8bc2c6c15f1267c8926df4c18c8791637c7a231a76322340c"
+    ),
 }
 
-# ELP のリリースアセット (tar.gz) の sha256: target -> OTP 表記 -> digest
-ELP_ARCHIVE_CHECKSUMS: dict[str, dict[str, str]] = {
-    "macos-aarch64-apple-darwin": {
-        "27.3": "b16fcae37bbae2def2163a4779ef09febd9904ec3382698a0032e118c770a7dc",
-        "28.5": "e7c4c0a9876f9e17c806453627d89f13b25d22b43e0481117a6934d2a28377d7",
-        "29.1": "3311edc6b4c1d6ed7cb6a8a4e37e3d8d19ffe879d006162d33753d2c72fdcdd4",
-    },
-    "macos-x86_64-apple-darwin": {
-        "27.3": "00cafdddb5c898ed1b045101f73134b52ff153af15eee42cba89aca6dcb97c42",
-        "28.5": "27f5f3ea6ab7213f0e3d9a93245dc59a501d92cc85edb11a8e421f0bdcf05e24",
-        "29.1": "2eb4b2a7a17ff96f71ff456175db7c0cc265a1cee1e616ddbfb0c02771b51ed0",
-    },
-    "linux-x86_64-unknown-linux-gnu": {
-        "27.3": "797315627b37cda882c8f9c1cd6c1207700accae504e2651e3bddfa4af4d7a73",
-        "28.5": "e93c4b10a446c330c1db85a53f101bfebe88d19373b1213564c914953ddf5ec0",
-        "29.1": "3251f2d3550adf28f33529686103fabb1fbf0b0e7deb5cd06b93dab06b8647ea",
-    },
-    "linux-aarch64-unknown-linux-gnu": {
-        "27.3": "282f5f26105c6bc64e17745a38ba5718300c51072d34afbb2a03163dbc4abc71",
-        "28.5": "2c30a04a746ae29400f26045ebed25277cf091512488e6dfa5727eac70d6beb9",
-        "29.1": "c15b7760222d9fed417b996790cd14aaf949fbe3ef113240bddc2fa7e73aec21",
-    },
-}
-
-# ELP のリリースアセットから取り出した elp バイナリの sha256: target -> OTP 表記 -> digest
+# ELP のリリースアセットから取り出した elp バイナリの sha256: target -> digest
 # キャッシュ済みバイナリの検証に使う (アーカイブの digest とは別物)
-ELP_BINARY_CHECKSUMS: dict[str, dict[str, str]] = {
-    "macos-aarch64-apple-darwin": {
-        "27.3": "009bb77ed63f0c58cece850dfe8c894a52dbcd3eed4e5c36557c5e8bc1b19877",
-        "28.5": "01c0386d5fd500a3596f8f1d322fe5490d6f213f50eb44047564b2fe59cbf04d",
-        "29.1": "d1e20d949ccc586f49633988ab06ec3465f06250e7847f0b2ff5dac948493519",
-    },
-    "macos-x86_64-apple-darwin": {
-        "27.3": "6ae3ebf0379c1074d09d66986a97f8dadd11403821b7d5449b12924af7289502",
-        "28.5": "b5aa400f1374f2e1b564d9793ec340cb575dffad16814c87185add9105da0f83",
-        "29.1": "28e75159ed88f57f08d76f30e485e0054e3ac43f3b89acb0071ac0fb66f1911f",
-    },
-    "linux-x86_64-unknown-linux-gnu": {
-        "27.3": "93b576c780280cdeb864d904918b5a9e11bbecc1878db20a01b9984bdc239b17",
-        "28.5": "5198720c0ac3410c8367003cd973be5a88abb3281a301c05a06e9ef11b33cb75",
-        "29.1": "2d06f74f96eac6a1004a63e101eece1a1faf2dc4c18b0b7f691a640b893ec079",
-    },
-    "linux-aarch64-unknown-linux-gnu": {
-        "27.3": "2a5e2d9749623288fc2122fae9b3a3c7e205792987481804f496308be2c7b7b2",
-        "28.5": "87fb23ce3b501666c1e705ab7613caca8e9df6c26014232bacfbd8f9cf9222df",
-        "29.1": "aca9382ba90b042497c4e4503f92b0a78288d4e76dc1f7d5eb72e04f699de1e0",
-    },
+ELP_BINARY_CHECKSUMS: dict[str, str] = {
+    "macos-aarch64-apple-darwin": (
+        "b11c4aba12a9ddb2821241ea378fdf7d66e07d512caa2697f0590b4648daaaa8"
+    ),
+    "macos-x86_64-apple-darwin": (
+        "f4315729993982b55ec0a55f288aaec2c37ad0eb9064ca87d2444bac91dab34f"
+    ),
+    "linux-x86_64-unknown-linux-gnu": (
+        "b9e4ad78dc6527aef7d6f042dd909972cbad68d4c100413d4485614a3d38f8cd"
+    ),
+    "linux-aarch64-unknown-linux-gnu": (
+        "61ee40e163d578ea06d1d8f857b81c11971609c8807cb898c9921039bbd2beae"
+    ),
 }
