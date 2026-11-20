@@ -166,39 +166,43 @@ def test_elp_target_rejects_unsupported_platform() -> None:
         _elp_target("Darwin", "riscv64")
 
 
-def test_elp_otp_asset_maps_supported_releases() -> None:
+def test_elp_otp_asset_returns_the_pinned_asset() -> None:
     """
     ELP のアセットは OTP のメジャーリリースごとに別名なので、対応を固定する。
+
+    本フックが対象とするのは OTP 29 系のみで、取得するアセットは otp-29.1 固定になる。
     """
-    assert _elp_otp_asset("27") == "27.3"
-    assert _elp_otp_asset("28") == "28.5"
     assert _elp_otp_asset("29") == "29.1"
 
 
-def test_elp_otp_asset_rejects_unsupported_release() -> None:
+@pytest.mark.parametrize(
+    "release",
+    ["26", "27", "28", "30"],
+    ids=["otp-26", "otp-27", "otp-28", "otp-30"],
+)
+def test_elp_otp_asset_rejects_unsupported_release(release: str) -> None:
     """
     ELP が対応していない OTP では、対応バージョンを示して失敗することを確認する。
+
+    OTP 29 系以外では eqwalizer を実行しない方針のため、27 / 28 も対象外になる。
     """
     with pytest.raises(RuntimeError, match="Unsupported Erlang/OTP release"):
-        _elp_otp_asset("26")
-    with pytest.raises(RuntimeError, match="Unsupported Erlang/OTP release"):
-        _elp_otp_asset("30")
+        _elp_otp_asset(release)
 
 
 def test_elp_asset_url_pins_the_release_tag() -> None:
     """
     アセットの URL がピン留めした ELP のリリースタグを指すことを確認する。
     """
-    assert elp_asset_url("macos-aarch64-apple-darwin", "28.5") == (
+    assert elp_asset_url("macos-aarch64-apple-darwin") == (
         "https://github.com/WhatsApp/erlang-language-platform/releases/download/"
-        "2026-10-14/elp-macos-aarch64-apple-darwin-otp-28.5.tar.gz"
+        "2026-10-14/elp-macos-aarch64-apple-darwin-otp-29.1.tar.gz"
     )
 
 
 def test_elp_checksums_cover_all_supported_variants() -> None:
     """
-    配布している 4 target x 3 OTP のすべてで、アーカイブとバイナリの
-    sha256 が揃っていることを確認する。
+    配布している 4 target すべてで、アーカイブとバイナリの sha256 が揃っていることを確認する。
     """
     targets = [
         "macos-aarch64-apple-darwin",
@@ -206,15 +210,13 @@ def test_elp_checksums_cover_all_supported_variants() -> None:
         "linux-x86_64-unknown-linux-gnu",
         "linux-aarch64-unknown-linux-gnu",
     ]
-    otp_assets = ["27.3", "28.5", "29.1"]
     for target in targets:
-        for otp_asset in otp_assets:
-            archive = ELP_ARCHIVE_CHECKSUMS.get(target, {}).get(otp_asset)
-            binary = ELP_BINARY_CHECKSUMS.get(target, {}).get(otp_asset)
-            assert archive is not None, f"{target} / OTP {otp_asset} のアーカイブの sha256 が無い"
-            assert binary is not None, f"{target} / OTP {otp_asset} のバイナリの sha256 が無い"
-            assert len(archive) == 64, f"{target} / OTP {otp_asset} のアーカイブの sha256 が不正"
-            assert len(binary) == 64, f"{target} / OTP {otp_asset} のバイナリの sha256 が不正"
+        archive = ELP_ARCHIVE_CHECKSUMS.get(target)
+        binary = ELP_BINARY_CHECKSUMS.get(target)
+        assert archive is not None, f"{target} のアーカイブの sha256 が無い"
+        assert binary is not None, f"{target} のバイナリの sha256 が無い"
+        assert len(archive) == 64, f"{target} のアーカイブの sha256 が不正"
+        assert len(binary) == 64, f"{target} のバイナリの sha256 が不正"
 
 
 def test_extract_elp_reads_binary_from_archive(tmp_path: Path) -> None:

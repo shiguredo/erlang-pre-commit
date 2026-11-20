@@ -26,7 +26,8 @@ from erlang_pre_commit.versions import (
     ELINT_VERSION,
     ELP_ARCHIVE_CHECKSUMS,
     ELP_BINARY_CHECKSUMS,
-    ELP_OTP_ASSETS,
+    ELP_OTP_ASSET,
+    ELP_OTP_RELEASE,
     ELP_VERSION,
 )
 
@@ -83,14 +84,19 @@ def elp_target() -> str:
 
 
 def _elp_otp_asset(release: str) -> str:
-    """Erlang/OTP のメジャーリリースに対応する ELP アセットの OTP 表記を返す。"""
-    otp_asset = ELP_OTP_ASSETS.get(release)
-    if otp_asset is None:
-        supported = ", ".join(sorted(ELP_OTP_ASSETS))
+    """
+    Erlang/OTP のメジャーリリースに対応する ELP アセットの OTP 表記を返す。
+
+    eqwalizer は OTP 29 系のみを対象とする。ELP のアセットは OTP の
+    メジャーリリースごとに別名で配布されるが、本フックはビルド済みの
+    otp-29.1 だけをピン留めして使う。
+    """
+    if release != ELP_OTP_RELEASE:
         raise RuntimeError(
-            f"Unsupported Erlang/OTP release for eqwalizer: {release} (supported: {supported})"
+            f"Unsupported Erlang/OTP release for eqwalizer: {release} "
+            f"(supported: {ELP_OTP_RELEASE})"
         )
-    return otp_asset
+    return ELP_OTP_ASSET
 
 
 def _detect_otp_release() -> str:
@@ -103,9 +109,7 @@ def _detect_otp_release() -> str:
             check=False,
         )
     except FileNotFoundError as exc:
-        raise RuntimeError(
-            "erl is required to run eqwalizer (supported: Erlang/OTP 27, 28 and 29)"
-        ) from exc
+        raise RuntimeError("erl is required to run eqwalizer (supported: Erlang/OTP 29)") from exc
     if completed.returncode != 0:
         raise RuntimeError(
             f"Failed to detect the Erlang/OTP release: erl exited with status "
@@ -127,8 +131,8 @@ def release_asset_url(tool: str, version: str, release_tag: str, target: str) ->
     return f"https://github.com/sile/{tool}/releases/download/{release_tag}/{asset}"
 
 
-def elp_asset_url(target: str, otp_asset: str) -> str:
-    asset = f"elp-{target}-otp-{otp_asset}.tar.gz"
+def elp_asset_url(target: str) -> str:
+    asset = f"elp-{target}-otp-{ELP_OTP_ASSET}.tar.gz"
     return (
         "https://github.com/WhatsApp/erlang-language-platform/releases/download/"
         f"{ELP_VERSION}/{asset}"
@@ -145,14 +149,14 @@ def _expected_checksum(tool: str, target: str) -> str:
         ) from exc
 
 
-def _elp_checksum(table: dict[str, dict[str, str]], target: str, otp_asset: str) -> str:
-    checksums = table.get(target)
-    if checksums is None or otp_asset not in checksums:
+def _elp_checksum(table: dict[str, str], target: str) -> str:
+    try:
+        return table[target]
+    except KeyError as exc:
         raise RuntimeError(
-            f"No pinned ELP checksum for target {target} with OTP {otp_asset}. "
-            f"Available OTP assets: {', '.join(sorted(checksums or {}))}"
-        )
-    return checksums[otp_asset]
+            f"No pinned ELP checksum for target {target} with OTP {ELP_OTP_ASSET}. "
+            f"Available targets: {', '.join(sorted(table))}"
+        ) from exc
 
 
 def _bin_dir() -> Path:
@@ -271,8 +275,8 @@ def _ensure_elp_binary() -> Path:
     _require_rebar3()
     target = elp_target()
     otp_asset = elp_otp_asset()
-    archive_checksum = _elp_checksum(ELP_ARCHIVE_CHECKSUMS, target, otp_asset)
-    binary_checksum = _elp_checksum(ELP_BINARY_CHECKSUMS, target, otp_asset)
+    archive_checksum = _elp_checksum(ELP_ARCHIVE_CHECKSUMS, target)
+    binary_checksum = _elp_checksum(ELP_BINARY_CHECKSUMS, target)
     destination = _bin_dir() / f"elp-{ELP_VERSION}-{target}-otp-{otp_asset}"
 
     if _ensure_ready(destination, binary_checksum):
@@ -285,7 +289,7 @@ def _ensure_elp_binary() -> Path:
             return destination
 
         asset_target = f"{target}-otp-{otp_asset}"
-        url = elp_asset_url(target, otp_asset)
+        url = elp_asset_url(target)
         archive = _download(url, "elp", ELP_VERSION, asset_target)
 
         archive_digest = hashlib.sha256(archive).hexdigest()

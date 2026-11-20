@@ -39,7 +39,7 @@ hooks = [
 ]
 ```
 
-型検査に `eqwalizer` を使う場合は Erlang/OTP と rebar3 が必要です。
+型検査に `eqwalizer` を使う場合は Erlang/OTP 29 と rebar3 が必要です。
 
 ```toml
 [[repos]]
@@ -182,7 +182,7 @@ eqwalizer は ELP が glibc 向けバイナリのみを配布しているため 
 - Python 3.12 以上
 - 初回実行時に GitHub Releases へのネットワークアクセス
 - eqwalizer を利用する場合は次も必要です
-  - Erlang/OTP 27、28、29 のいずれか（`erl` に PATH が通っていること）
+  - Erlang/OTP 29（`erl` に PATH が通っていること）
   - rebar3 3.24.0 以上
 
 ELP は `eqwalizer_support` を同梱し、プロジェクトへ自動で追加します。Dialyzer のように `eqwalizer` 型を未知の型として扱うツールを併用する場合は、依存に追加します。その場合 ELP は同梱版ではなく、プロジェクトの依存を使います。
