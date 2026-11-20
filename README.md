@@ -20,7 +20,7 @@
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.5.0"
+rev = "2026.6.0"
 hooks = [
   { id = "efmt" },
   { id = "elint" },
@@ -32,19 +32,19 @@ CI などで書き込みなしの検査だけしたい場合は `efmt-check` を
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.5.0"
+rev = "2026.6.0"
 hooks = [
   { id = "efmt-check" },
   { id = "elint" },
 ]
 ```
 
-型検査に `eqwalizer` を使う場合は Erlang/OTP と rebar3 が必要です。
+型検査に `eqwalizer` を使う場合は Erlang/OTP 29 と rebar3 が必要です。
 
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.5.0"
+rev = "2026.6.0"
 hooks = [
   { id = "efmt-check" },
   { id = "elint" },
@@ -77,7 +77,7 @@ prek の `args` に渡した引数は、そのまま `efmt` / `elint` / `elp` �
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.5.0"
+rev = "2026.6.0"
 hooks = [
   { id = "efmt-check", args = ["--check-line-length=100", "--color"] },
   { id = "elint" },
@@ -122,7 +122,7 @@ hooks = [
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.5.0"
+rev = "2026.6.0"
 hooks = [
   { id = "efmt" },
   { id = "elint", args = ["--lint=element_bif", "--lint=case_over_if"] },
@@ -151,7 +151,7 @@ rebar3 プロジェクト以外で `project.json` を使う例です。
 ```toml
 [[repos]]
 repo = "https://github.com/shiguredo/erlang-pre-commit"
-rev = "2026.5.0"
+rev = "2026.6.0"
 hooks = [
   { id = "eqwalizer", args = ["--project=project.json", "--color=never"] },
 ]
@@ -182,20 +182,10 @@ eqwalizer は ELP が glibc 向けバイナリのみを配布しているため 
 - Python 3.12 以上
 - 初回実行時に GitHub Releases へのネットワークアクセス
 - eqwalizer を利用する場合は次も必要です
-  - Erlang/OTP 27、28、29 のいずれか（`erl` に PATH が通っていること）
+  - Erlang/OTP 29（`erl` に PATH が通っていること）
   - rebar3 3.24.0 以上
 
-ELP は `eqwalizer_support` を同梱し、プロジェクトへ自動で追加します。Dialyzer のように `eqwalizer` 型を未知の型として扱うツールを併用する場合は、依存に追加します。その場合 ELP は同梱版ではなく、プロジェクトの依存を使います。
-
-```erlang
-{deps, [
-  {eqwalizer_support,
-    {git_subdir,
-        "https://github.com/whatsapp/erlang-language-platform.git",
-        {branch, "main"},
-        "eqwalizer/eqwalizer_support"}}
-]}.
-```
+ELP は `eqwalizer_support` を同梱し、プロジェクトへ自動で追加するため、プロジェクト側の依存には不要です。自前のスペックで `eqwalizer` 型を書き、Dialyzer のようにその型を未知の型として扱うツールを併用する場合だけ、[ELP のドキュメント](https://whatsapp.github.io/erlang-language-platform/docs/get-started/configure-project/rebar3/)に従って依存に追加します。その場合 ELP は同梱版ではなくプロジェクトの依存を使います。
 
 ## efmt ライセンス
 
